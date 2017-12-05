@@ -48,5 +48,5 @@ class Source(source.Source):
 
     def get_latest_price(self, ticker):
         template = 'https://openexchangerates.org/api/latest.json?app_id={}&base={}&symbols={}'
-        returnself.get_url(template, ticker)
+        return self.get_url(template, ticker)
 
