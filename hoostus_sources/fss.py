@@ -57,14 +57,17 @@ class Source(source.Source):
         decoded_response = response.read().decode('utf-8')
         csv_reader = csv.reader(io.StringIO(decoded_response))
 
+        current_tz = datetime.datetime.now(datetime.timezone.utc).astimezone().tzinfo
+
+
         for row in csv_reader:
             fund = row[0].lower().replace(' ', '')
             if fund == 'investmentoptions':
-                dates = [datetime.datetime.strptime(x, '%d/%m/%Y') for x in row[1:]]
+                dates = [datetime.datetime.strptime(x, '%d/%m/%Y').replace(tzinfo=current_tz) for x in row[1:]]
             if fund == fund_name:
                 prices = [D(x) for x in row[1:]]
 
-        dt_date = datetime.datetime(date.year, date.month, date.day)
+        dt_date = datetime.datetime(date.year, date.month, date.day).replace(tzinfo=current_tz)
         for (trade_date, price) in zip(dates, prices):
             if trade_date <= dt_date:
                 return source.SourcePrice(price, trade_date, None)

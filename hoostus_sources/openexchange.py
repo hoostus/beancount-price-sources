@@ -17,7 +17,7 @@ bean-price -e 'USD:openexchange/<app_id>:USD_VND'
 """
 
 class Source(source.Source):
-    "Morningstar API price extractor."
+    "OpenExchange API exchange rate extractor."
 
     def get_url(self, url_template, ticker):
         app_id, currencies = ticker.split(':')
@@ -38,7 +38,7 @@ class Source(source.Source):
         # leaves tons of cruft (i.e. dozens of digits of meaningless precision) that
         # just clutters up the price file
         price = D(response['rates'][to_currency]).quantize(D('1.000000'))
-        trade_date = datetime.datetime.fromtimestamp(response['timestamp'])
+        trade_date = datetime.datetime.fromtimestamp(response['timestamp'], datetime.timezone.utc)
         return source.SourcePrice(price, trade_date, from_currency)
 
     def get_historical_price(self, ticker, date):

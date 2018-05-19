@@ -86,6 +86,8 @@ class Source(source.Source):
         url = template.format(sec_id, data_id, fmt(begin_date), fmt(end_date))
         logging.info("Fetching %s", url)
 
+        current_tz = datetime.datetime.now(datetime.timezone.utc).astimezone().tzinfo
+
         def hook(dct):
             """ An ad-hoc parser for Morningstar's weird format. """
             if 'code' in dct:
@@ -95,8 +97,8 @@ class Source(source.Source):
                 return {'i': int(dct['i']),
                         'd': dct['d']}
             elif set(dct.keys()) == set(('i', 'v')):
-                return {'i': datetime.datetime.strptime(dct['i'], '%Y-%m-%d'),
-                            'v': D(dct['v'])}
+                return {'i': datetime.datetime.strptime(dct['i'], '%Y-%m-%d').replace(tzinfo=current_tz),
+                        'v': D(dct['v'])}
             elif set(dct.keys()) == set(('i', 't')):
                 return dct
             elif set(dct.keys()) == set('r'):
