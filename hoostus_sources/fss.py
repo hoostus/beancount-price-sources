@@ -3,34 +3,30 @@
 
 import datetime
 import logging
-import re
 import io
 import csv
-import string
-from urllib import parse
 from urllib import error
 
-from beancount.core.number import D
-from beancount.prices import source
-from beancount.utils import net_utils
+from decimal import Decimal as D
+import beanprice.source
+import beanprice.net_utils
 
 """
 bean-price -e 'AUD:fss/International_Equities'
 """
 
-class Source(source.Source):
+class Source(beanprice.source.Source):
     "First State Super price extractor."
 
     def get_latest_price(self, ticker):
         return self.get_historical_price(ticker, datetime.date.today())
 
-    def get_csv(self, date):
-        template = 'https://firststatesuper.com.au/content/dam/ftc/superunitprices/super-{0:0>2}-{1}.csv'
-        url = template.format(date.month, date.year)
+    def get_csv(self):
+        url = 'https://aware.com.au/bin/unitPriceExport?category=FUTURE_SAVER'
         logging.info("Fetching %s", url)
 
         try:
-            response = net_utils.retrying_urlopen(url)
+            response = beanprice.net_utils.retrying_urlopen(url, timeout=10)
             if response is None:
                 return None
             else:
@@ -41,40 +37,21 @@ class Source(source.Source):
     def get_historical_price(self, ticker, date):
         """See contract in beancount.prices.source.Source."""
 
-        fund_name = ticker.replace('_', '').lower()
+        fund_name = ticker.replace('_', ' ')
 
-        response = self.get_csv(date)
-        if not response:
-            # We may need to check the previous month to find the most recent
-            # unit price. e.g. if we run this on December 1st on a Sunday, there
-            # won't be a December CSV yet.
-            response = self.get_csv(date + datetime.timedelta(weeks=-1))
-            if not response:
-                # But only check 1 month previous. If that still didn't work
-                # then give up.
-                return None
+        response = self.get_csv()
 
         decoded_response = response.read().decode('utf-8')
-        csv_reader = csv.reader(io.StringIO(decoded_response))
+        csv_reader = csv.DictReader(io.StringIO(decoded_response))
 
         current_tz = datetime.datetime.now(datetime.timezone.utc).astimezone().tzinfo
-
+        dt_date = datetime.datetime(date.year, date.month, date.day).replace(tzinfo=current_tz)
 
         for row in csv_reader:
-            fund = row[0].lower().replace(' ', '')
-            if fund == 'investmentoptions':
-                dates = [datetime.datetime.strptime(x, '%d/%m/%Y').replace(tzinfo=current_tz) for x in row[1:]]
-            if fund == fund_name:
-                prices = [D(x) for x in row[1:]]
+            r_date = datetime.datetime.strptime(row['Date'], '%d/%m/%Y').replace(tzinfo=current_tz)
+            if r_date <= dt_date:
+                r_price = row[fund_name]
+                return beanprice.source.SourcePrice(D(r_price), r_date, None)
 
-        dt_date = datetime.datetime(date.year, date.month, date.day).replace(tzinfo=current_tz)
-        for (trade_date, price) in zip(dates, prices):
-            if trade_date <= dt_date:
-                return source.SourcePrice(price, trade_date, None)
-
-        # If the date we wanted was at the beginning of the month...and falls on a day
-        # that was a weekend/holiday then we need to look in the previous month's
-        # CSV file to find the closest price.
-        new_date = date.replace(day=1) + datetime.timedelta(days=-1)
-        return self.get_historical_price(ticker, new_date)
+        return None
 

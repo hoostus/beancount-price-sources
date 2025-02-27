@@ -8,15 +8,15 @@ import json
 from urllib import parse
 from urllib import error
 
-from beancount.core.number import D
-from beancount.prices import source
-from beancount.utils import net_utils
+from decimal import Decimal as D
+import beanprice.source
+import beanprice.net_utils
 
 """
 bean-price -e 'USD:openexchange/<app_id>:USD_VND'
 """
 
-class Source(source.Source):
+class Source(beanprice.source.Source):
     "OpenExchange API exchange rate extractor."
 
     def get_url(self, url_template, ticker):
@@ -26,7 +26,7 @@ class Source(source.Source):
         url = url_template.format(app_id, from_currency, to_currency)
         logging.info("Fetching %s", url)
         try:
-            response = net_utils.retrying_urlopen(url)
+            response = beanprice.net_utils.retrying_urlopen(url)
             if response is None:
                 return None
             response = response.read().decode('utf-8').strip()
