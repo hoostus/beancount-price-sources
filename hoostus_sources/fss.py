@@ -12,7 +12,7 @@ import beanprice.source
 import beanprice.net_utils
 
 """
-bean-price -e 'AUD:fss/International_Equities'
+bean-price -e 'AUD:fss/International_Shares'
 """
 
 class Source(beanprice.source.Source):
@@ -54,4 +54,9 @@ class Source(beanprice.source.Source):
                 return beanprice.source.SourcePrice(D(r_price), r_date, None)
 
         return None
+
+if __name__ == '__main__':
+    fss = Source()
+    print(fss.get_latest_price('International_Shares'))
+    print(fss.get_historical_price('International_Shares', datetime.datetime(2025, 1, 1)))
 

@@ -95,10 +95,11 @@ class Source(beanprice.source.Source):
         closest_value = usd.iloc[iloc_idx]
         closest_date = closest_value.index.to_pydatetime()[0]
         rate = D(closest_value.iloc[0])
-        return source.SourcePrice(rate, closest_date, 'USD')
+        return beanprice.source.SourcePrice(rate, closest_date, 'USD')
 
 
 if __name__ == '__main__':
     rba = Source()
     print(rba.get_latest_price('USD'))
-    print(rba.get_historical_price('USD', datetime.datetime(2007, 1, 2)))
+    print(rba.get_historical_price('USD', datetime.datetime(2007, 1, 2, 0, 0, 0, 0, pytz.utc)))
+
