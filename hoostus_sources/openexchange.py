@@ -39,7 +39,7 @@ class Source(beanprice.source.Source):
         # just clutters up the price file
         price = D(response['rates'][to_currency]).quantize(D('1.000000'))
         trade_date = datetime.datetime.fromtimestamp(response['timestamp'], datetime.timezone.utc)
-        return source.SourcePrice(price, trade_date, from_currency)
+        return beanprice.source.SourcePrice(price, trade_date, from_currency)
 
     def get_historical_price(self, ticker, date):
         template = 'https://openexchangerates.org/api/historical/{}.json'.format(date.strftime('%Y-%m-%d'))

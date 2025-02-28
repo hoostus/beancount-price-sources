@@ -46,7 +46,7 @@ class Source(beanprice.source.Source):
             observation_date = datetime.datetime.strptime(period, '%Y-%m-%d').replace(tzinfo=sydney_tz).replace(hour=16)
 
             if targetCurrency == 'USD':
-                return beanprice.source.SourcePrice(D(value), observation_date, 'USD')
+                return beanprice.source.SourcePrice(D(value).quantize(D('1.0000')), observation_date, 'USD')
 
         return None
 
