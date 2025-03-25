@@ -1,11 +1,21 @@
 Additional importers for beancount plaintext accounting
 
-Installation
+# Installation
 ------------
 python setup.py install 
 
-First State Super
------------------
+Or, better yet, use uv and add this to your pyproject.toml
+
+```
+dependencies = [
+    "beancount-hoostus-prices"
+]
+
+[tool.uv.sources]
+beancount-hoostus-prices = { git = "https://github.com/hoostus/beancount-price-sources" }
+```
+
+# First State Super (aka Aware Super)
 bean-price -e 'AUD:hoostus_sources.fss/International_Equities'
 
 First State Super is an Australian Superannuation fund that
@@ -17,8 +27,7 @@ just have normal names like "International Equities".
 Replace any spaces with underscores, so "International Equities"
 becomes "International_Equities".
 
-OpenExchange
-------------
+# OpenExchange
 bean-price -e 'VND:hoostus_sources.openexchange/<app_id>:USD_VND'
 
 OpenExchange provides exchange rates, though you must sign up in order
@@ -27,8 +36,7 @@ an app_id.
 
 The app_id forms part of the "ticker".
 
-Reserve Bank of Australia (RBA)
--------------------------------
+# Reserve Bank of Australia (RBA)
 bean-price -e 'USD:hoostus_sources.rba/AUD'
 
 This allows Australians to fetch the "official" exchange rate
@@ -36,8 +44,9 @@ This allows Australians to fetch the "official" exchange rate
 
 Currently only supports USD:AUD.
 
-IBKR
-----
+# IBKR
+bean-price -e 'USD:hoostus_sources.ibkr/SMLF'
+
 Fetch prices from Interactive Brokers. This is forked from
 taroich's original work at https://tariochbctools.readthedocs.io/en/latest/price_fetchers.html
 
