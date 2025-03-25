@@ -1,0 +1,13 @@
+[project]
+name = "beancount-price-sources"
+version = "1.0.0"
+description = "Various price sources for beancount"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "beancount>=3.1.0",
+    "beanprice>=2.0.0",
+    "ibflex>=0.15",
+    "pandas>=2.2.3",
+    "pytz>=2025.2",
+]
