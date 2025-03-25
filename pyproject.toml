@@ -1,5 +1,5 @@
 [project]
-name = "beancount-price-sources"
+name = "beancount-hoostus-prices"
 version = "1.0.0"
 description = "Various price sources for beancount"
 readme = "README.md"
