@@ -1,6 +1,6 @@
 [project]
 name = "beancount-hoostus-prices"
-version = "1.0.0"
+version = "3.0.0"
 description = "Various price sources for beancount"
 readme = "README.md"
 requires-python = ">=3.12"
