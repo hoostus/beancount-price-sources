@@ -4,21 +4,6 @@ Installation
 ------------
 python setup.py install 
 
-Morningstar price source
-------------------------
-bean-price -e 'USD:hoostus_sources.morningstar/etfs:XASX:VEU'
-
-The Morningstar ticker is 3 parts: the "type", the exchange,
-and then the actual ticker. This mimics the URL structure on the
-Morningstar website when you search for a quote.
-
-That is, is you search for Microsoft, you will be redirected to the
-URL:
-
-http://beta.morningstar.com/stocks/xnas/msft/quote.html
-
-Which becomes stocks:XNAS:MSFT for use with this price source.
-
 First State Super
 -----------------
 bean-price -e 'AUD:hoostus_sources.fss/International_Equities'
@@ -41,3 +26,12 @@ to use the service. Sign ups are free. After you sign up, you will get
 an app_id.
 
 The app_id forms part of the "ticker".
+
+Reserve Bank of Australia (RBA)
+-------------------------------
+bean-price -e 'USD:hoostus_sources.rba/AUD'
+
+This allows Australians to fetch the "official" exchange rate
+(i.e. as required by the ATO).
+
+Currently only supports USD:AUD.
