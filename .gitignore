@@ -2,3 +2,6 @@ build/*
 .pytest_cache/*
 MANIFEST
 record.txt
+.venv
+uv.lock
+.python-version
