@@ -8,6 +8,8 @@ from beanprice import source
 from dateutil import tz
 from ibflex import client, parser
 
+# A Flex Query (with ID & Token) is required for this.
+# https://www.ibkrguides.com/clientportal/performanceandstatements/flex-web-service.htm
 
 class Source(source.Source):
     def get_latest_price(self, ticker: str) -> source.SourcePrice | None:

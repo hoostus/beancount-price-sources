@@ -33,6 +33,8 @@ class Source(beanprice.source.Source):
                 return response
         except error.HTTPError:
             return None
+        except TimeoutError:
+            return None
 
     def get_historical_price(self, ticker, date):
         """See contract in beancount.prices.source.Source."""
@@ -40,6 +42,8 @@ class Source(beanprice.source.Source):
         fund_name = ticker.replace('_', ' ')
 
         response = self.get_csv()
+        if not response:
+            return None
 
         decoded_response = response.read().decode('utf-8')
         csv_reader = csv.DictReader(io.StringIO(decoded_response))
